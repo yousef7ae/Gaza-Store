@@ -1,0 +1,51 @@
+body {
+    direction: rtl !important;
+    text-align: right !important;
+}
+
+.rounded-top-right {
+    border-top-right-radius: 0;
+    border-top-left-radius: 80px;
+}
+
+.filter::before {
+    left: 100% !important;
+}
+
+.pl-110p {
+    padding-right: 110px;
+    padding-left: 0 !important;
+}
+
+.left-0 {
+    right: 0 !important;
+    left: auto !important;
+}
+
+.cover {
+    object-fit: cover;
+}
+
+#events {
+    direction: ltr !important;
+}
+
+#wanted {
+    direction: ltr !important;
+}
+
+#wanted-2 {
+    direction: ltr !important;
+}
+
+.left-edit {
+    right: auto !important;
+    left: 0 !important;
+}
+
+@media (max-width: 768px) {
+    .filter::before {
+        left: 100% !important;
+        display: none;
+    }
+}
