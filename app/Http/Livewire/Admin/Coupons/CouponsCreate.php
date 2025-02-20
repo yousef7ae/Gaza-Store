@@ -69,15 +69,15 @@ class CouponsCreate extends Component
         $this->coupon = [];
     }
 
-    // public function setProduct()
-    // {
-    //     if ($this->coupon['store_id']){
-    //         $this->products = Product::where('store_id',$this->coupon['store_id'])->get();
-    //     }
-    //     if ($this->coupon['category_id']) {
-    //         $this->products = Product::where('category_id', $this->coupon['category_id'])->get();
-    //     }
-    // }
+    public function setProduct()
+    {
+        if ($this->coupon['store_id']){
+            $this->products = Product::where('store_id',$this->coupon['store_id'])->get();
+        }
+        if ($this->coupon['category_id']) {
+            $this->products = Product::where('category_id', $this->coupon['category_id'])->get();
+        }
+    }
 
     public function render()
     {
