@@ -146,7 +146,7 @@
             </div>
         </div>
 
-        @if (auth()->user()->hasRole('Admin'))
+        {{-- @if (auth()->user()->hasRole('Admin'))
             <div class="col-md-6">
                 <div class="form-group">
                     <label class="control-label">{{__("Store")}}</label>
@@ -162,8 +162,8 @@
                     @enderror
                 </div>
             </div>
-        @endif
-        <div class="col-md-6">
+        @endif --}}
+        {{-- <div class="col-md-6">
             <div class="form-group">
                 <label class="control-label">{{__("Category")}}</label>
                 <select wire:change = "setProduct" wire:model="coupon.category_id"
@@ -177,7 +177,7 @@
                 <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
                 @enderror
             </div>
-        </div>
+        </div> --}}
 
 {{--        <div class="col-md-6">--}}
 {{--            <div class="form-group">--}}
@@ -195,7 +195,7 @@
 {{--            </div>--}}
 {{--        </div>--}}
 
-        <div class="col-md-6">
+        {{-- <div class="col-md-6">
             <div class="form-group">
                 <label class="control-label">{{__("Products")}}</label>
                 <select wire:model.defer="coupon.product_id"
@@ -209,7 +209,7 @@
                 <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
                 @enderror
             </div>
-        </div>
+        </div> --}}
 
 
         <div class="col-md-6">
@@ -225,7 +225,7 @@
             </div>
         </div>
 
-        <div class="col-md-6">
+        <div class="col-md-12">
             <div class="form-group">
                 <label class="control-label">{{__("expiration")}}</label>
                 <input value="" wire:model.defer="coupon.expiration"

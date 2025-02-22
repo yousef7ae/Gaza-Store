@@ -127,7 +127,7 @@ class UserController extends Controller
         ]);
         //        $user->api_token = $user->createToken("api-login")->plainTextToken;
 
-        $user->syncRoles(4); //Customer
+        $user->syncRoles(2); //Customer
 
         return response()->json([
             "status" => true,

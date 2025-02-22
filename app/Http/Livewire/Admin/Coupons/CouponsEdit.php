@@ -46,10 +46,10 @@ class CouponsEdit extends Component
         $this->validate([
             'coupon.code' => 'required',
             'coupon.value' => 'required|numeric',
-            'coupon.product_id' => 'nullable'/*|exists:products,id*/,
+            // 'coupon.product_id' => 'nullable'/*|exists:products,id*/,
             'coupon.expiration' => 'required|date',
-            'coupon.category_id' => 'nullable'/*|exists:categories,id*/,
-            'coupon.store_id' => 'nullable'/*|exists:stores,id*/,
+            // 'coupon.category_id' => 'nullable'/*|exists:categories,id*/,
+            // 'coupon.store_id' => 'nullable'/*|exists:stores,id*/,
 //            'coupon.brand_id' => 'nullable'/*|exists:brands,id*/,
         ]);
 

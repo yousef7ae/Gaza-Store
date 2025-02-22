@@ -17,13 +17,13 @@ class CouponsCreate extends Component
     function mount($store_id = null)
     {
         $this->store_id = $store_id;
-        
+
         if (auth()->user()->hasRole('Admin')) {
             $this->products = Product::get();
             $this->stores = Store::where('status', 1)->get();
             $this->categories = Category::where('status', 1)->get();
             $this->users = User::get();
-            
+
         } else {
             $this->products = Product::whereHas('store', function ($q) {
                 return $q->whereIn('stores.id', auth()->user()->stores()->pluck('id')->toArray());
@@ -45,10 +45,10 @@ class CouponsCreate extends Component
         $this->validate([
             'coupon.code' => 'required',
             'coupon.value' => 'required|numeric',
-            'coupon.product_id' => 'nullable'/*|exists:products,id*/,
+            // 'coupon.product_id' => 'nullable'/*|exists:products,id*/,
             'coupon.expiration' => 'required|date',
-            'coupon.category_id' => 'nullable'/*|exists:categories,id*/,
-            'coupon.store_id' => 'nullable'/*|exists:stores,id*/,
+            // 'coupon.category_id' => 'nullable'/*|exists:categories,id*/,
+            // 'coupon.store_id' => 'nullable'/*|exists:stores,id*/,
 //            'coupon.brand_id' => 'nullable'/*|exists:brands,id*/,
 
         ]);
@@ -57,8 +57,8 @@ class CouponsCreate extends Component
             $this->coupon['user_id'] = auth()->id();
         }
 
-        $this->product = Product::where('id', $this->coupon['product_id'])->first();
-        $this->store_id = $this->product->store_id;
+        // $this->product = Product::where('id', $this->coupon['product_id'])->first();
+        // $this->store_id = $this->product->store_id;
 
         $this->coupon['count'] = 0;
 

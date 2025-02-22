@@ -60,11 +60,11 @@
                                         <th>#</th>
                                         <th>{{__("code")}}</th>
                                         <th>{{__("value")}}</th>
-                                        <th>{{__("count")}}</th>
-                                        <th>{{__("used")}}</th>
+                                        {{-- <th>{{__("count")}}</th>
+                                        <th>{{__("used")}}</th> --}}
                                         <th>{{__("expiration")}}</th>
-                                        <th>{{__("product_id")}}</th>
-                                        <th>{{__("user_id")}}</th>
+                                        {{-- <th>{{__("product_id")}}</th> --}}
+                                        {{-- <th>{{__("user_id")}}</th> --}}
                                         <th width="300">{{__("Action")}}</th>
                                     </tr>
                                     </thead>
@@ -74,11 +74,11 @@
                                             <td>{{$coupon->id}}</td>
                                             <td>{{$coupon->code}}</td>
                                             <td>{{$coupon->value}}</td>
-                                            <td>{{$coupon->count}}</td>
-                                            <td>{{$coupon->used}}</td>
+                                            {{-- <td>{{$coupon->count}}</td>
+                                            <td>{{$coupon->used}}</td> --}}
                                             <td>{{$coupon->expiration}}</td>
-                                            <td>{{$coupon->product_id}}</td>
-                                            <td>{{$coupon->user_id}}</td>
+                                            {{-- <td>{{$coupon->product_id}}</td>
+                                            <td>{{$coupon->user_id}}</td> --}}
                                             <td>
                                                 @if(auth()->user()->can('coupons show'))
                                                 <a class="btn btn-xs btn-info"
