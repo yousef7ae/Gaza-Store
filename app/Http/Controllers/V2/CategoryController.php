@@ -46,4 +46,6 @@ class CategoryController extends Controller
 
         return response()->json(['status' => true, 'data' => $categories]);
     }
+
+    
 }

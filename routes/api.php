@@ -192,7 +192,7 @@ Route::middleware(['api-token', 'api-localization'])->group(function () {
             Route::put('/update_order/{id}', [\App\Http\Controllers\V2\OrderController::class, 'update_order']);
             Route::post('update_QrCode', [\App\Http\Controllers\V2\OrderController::class, 'update_qr_code']);
 
-            Route::get('/orders/{id}', [\App\Http\Controllers\V2\OrderController::class, 'show']);
+            Route::get('/orders_show', [\App\Http\Controllers\V2\OrderController::class, 'show']);
             Route::delete('/orders/{id}', [\App\Http\Controllers\V2\OrderController::class, 'delete']);
             Route::get('/order_accept/{id}', [\App\Http\Controllers\V2\OrderController::class, 'order_accept']);
 

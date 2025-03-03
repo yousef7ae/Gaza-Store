@@ -153,32 +153,34 @@ class OrderController extends Controller
 
     public function index_Customer()
     {
-        $orders = Order::with('store', 'user', 'delivery', 'address', 'payment_gateway', 'order_status');
+        $orders = Order::with('user', 'address', 'order_status');
         if (auth('sanctum')->user()->hasRole('Customer')) {
             $orders = $orders->where('user_id', auth('sanctum')->id());
         } else {
             return response()->json(['status' => false, 'message' => "You Don't Have Customer Permission"]);
         }
         if (request('status')) {
-            if (request('status') == "-1") {
-                $orders = $orders->whereIn('status', [0, 1, 2, 3, 4, 5]);
-                $orders->status = Status::where('key', -1)->get();
-            } elseif (request('status') == "-2") {
-                $orders = $orders->where('status', '>', 0);
-            } else {
-                $orders = $orders->where('status', request('status'));
-            }
+
+             $orders = $orders->where('status', request('status'));
+            // if (request('status') == "-1") {
+            //     $orders = $orders->whereIn('status', [0, 1, 2, 3, 4, 5]);
+            //     $orders->status = Status::where('key', -1)->get();
+            // } elseif (request('status') == "-2") {
+            //     $orders = $orders->where('status', '>', 0);
+            // } else {
+            //     $orders = $orders->where('status', request('status'));
+            // }
         }
 
-        if (request('status') === "0") {
-            $orders = $orders->where('status', 0);
-        }
+        // if (request('status') === "0") {
+        //     $orders = $orders->where('status', 0);
+        // }
 
-        if (request('store_id')) {
-            $orders = $orders->whereIn('store_id', request('store_id'));
-        }
+        // if (request('store_id')) {
+        //     $orders = $orders->whereIn('store_id', request('store_id'));
+        // }
 
-        $orders = $orders->with('OrderDetails', 'OrderDetails.product')->with('store')->orderBy('id', 'DESC')->paginate(10);
+        $orders = $orders->with('OrderDetails', 'OrderDetails.product')->orderBy('id', 'DESC')->paginate(10);
         return response()->json(['status' => true, "message" => "successfully", 'data' => $orders->items()]);
     }
 
@@ -192,14 +194,19 @@ class OrderController extends Controller
     {
         $validator = Validator::make(request()->input(), [
             'address_id' => 'nullable',
-            'payment_gateway_id' => 'required',
-            'delivery_method_type' => 'required',
+            // 'payment_gateway_id' => 'required',
+            // 'delivery_method_type' => 'required',
             'district_id' => 'nullable',
         ]);
+
 
         if (!$validator->passes()) {
             return response()->json(["status" => false, "message" => $validator->errors()->first()]);
         }
+
+        $address_id = request('address_id') ? request('address_id') : null;
+        $discount_price =  request('discount_price') ? request('discount_price') : 0;
+
 
         $carts = Cart::where(function ($q) {
             if (auth('sanctum')->id()) {
@@ -231,8 +238,8 @@ class OrderController extends Controller
             }
         }
 
-        $delivery_fee = 0;
-        $delivery_fee_price = 0;
+        // $delivery_fee = 0;
+        // $delivery_fee_price = 0;
 
 //        if (request('delivery_method_id') != "1") {
 //            $delivery_fee = DeliveryFee::whereIn('store_id', $carts->pluck('store_id')->toArray())->max('value');
@@ -248,69 +255,69 @@ class OrderController extends Controller
 //            }
 //        }
 
-        $redeem_points = 0;
-        $redeem_price = 0;
-        $redeem_message = "";
+        // $redeem_points = 0;
+        // $redeem_price = 0;
+        // $redeem_message = "";
 
-        if (request('redeem')) {
-            if (auth('sanctum')->check()) {
-                if (auth('sanctum')->user()->points < 100) {
-                    $redeem_message = "The number of points is less than 1000";
-                } else {
-                    $redeem_message = "success";
-                    $redeem_points = intval(auth('sanctum')->user()->points / 100) * 100;
-                    $redeem_price = intval(auth('sanctum')->user()->points / 100);
+        // if (request('redeem')) {
+        //     if (auth('sanctum')->check()) {
+        //         if (auth('sanctum')->user()->points < 100) {
+        //             $redeem_message = "The number of points is less than 1000";
+        //         } else {
+        //             $redeem_message = "success";
+        //             $redeem_points = intval(auth('sanctum')->user()->points / 100) * 100;
+        //             $redeem_price = intval(auth('sanctum')->user()->points / 100);
 
-                    if ($redeem_price > ($carts->sum('total') + $delivery_fee_price - $coupon_price)) {
-                        $redeem_points = ($carts->sum('total') + $delivery_fee_price - $coupon_price) * 100;
-                        $redeem_price = ($carts->sum('total') + $delivery_fee_price - $coupon_price);
-                    }
+        //             if ($redeem_price > ($carts->sum('total') + $delivery_fee_price - $coupon_price)) {
+        //                 $redeem_points = ($carts->sum('total') + $delivery_fee_price - $coupon_price) * 100;
+        //                 $redeem_price = ($carts->sum('total') + $delivery_fee_price - $coupon_price);
+        //             }
 
-                    $user = User::where('id', auth('sanctum')->id())->first();
-                    $user->points = $user->points - $redeem_points;
-                    $user->save();
-                }
-            } else {
-                $redeem_message = "you are not login";
-            }
-        }
+        //             $user = User::where('id', auth('sanctum')->id())->first();
+        //             $user->points = $user->points - $redeem_points;
+        //             $user->save();
+        //         }
+        //     } else {
+        //         $redeem_message = "you are not login";
+        //     }
+        // }
 
-        $district = null;
+        // $district = null;
 
-        if (request('delivery_method_type') != 1) {
-            $validator = Validator::make(request()->input(), [
-                'district_id' => 'required|exists:districts,id',
-            ]);
+        // if (request('delivery_method_type') != 1) {
+        //     $validator = Validator::make(request()->input(), [
+        //         'district_id' => 'required|exists:districts,id',
+        //     ]);
 
-            if (!$validator->passes())
-                return response()->json(["status" => false, "message" => $validator->errors()->first()]);
+        //     if (!$validator->passes())
+        //         return response()->json(["status" => false, "message" => $validator->errors()->first()]);
 
-            $delivery_method = DeliveryMethod::typeList(0);
+        //     $delivery_method = DeliveryMethod::typeList(0);
 
-            $district = District::find(request('district_id'));
-        }
+        //     $district = District::find(request('district_id'));
+        // }
 
-        $delivery_price = $district ? $district->delivery_price : 0;
+        // $delivery_price = $district ? $district->delivery_price : 0;
 
         $order = Order::create([
             'order_number' => time() . rand(1000, 9000),
             'note' => request('note'),
             'discount' => $coupon_price,
             'coupon' => request('coupon'),
-            'district_id' => $district ? $district->id : null,
-            'district_delivery_price' => $delivery_price,
-            'store_id' => $carts[0]->store_id,
+            // 'district_id' => $district ? $district->id : null,
+            // 'district_delivery_price' => $delivery_price,
+            // 'store_id' => $carts[0]->store_id,
             'delivery_id' => null,
-            'address_id' => request('address_id'),
-            'payment_gateway_id' => request('payment_gateway_id'),
-            'delivery_method_id' => request('delivery_method_type'),
+            'address_id' => $address_id ,
+            // 'payment_gateway_id' => request('payment_gateway_id'),
+            // 'delivery_method_id' => request('delivery_method_type'),
             'user_id' => auth('sanctum')->id(),
             'status' => 0,
-            'delivery_fee' => $delivery_fee_price,
-            'redeem_price' => $redeem_price,
-            'discount_price' => $coupon_price,
+            // 'delivery_fee' => $delivery_fee_price,
+            // 'redeem_price' => $redeem_price,
+            'discount_price' => $discount_price,
             'order_total' => $carts->sum('total'),
-            'total' => ($carts->sum('total') + $delivery_price) - ($coupon_price + $redeem_price),
+            'total' => $carts->sum('total') - $discount_price,
         ]);
 
         foreach ($carts as $cart) {
@@ -318,21 +325,21 @@ class OrderController extends Controller
                 'product_name' => $cart->product_name,
                 'qty' => $cart->qty,
                 'price' => $cart->price,
-                'discount' => $cart->discount,
+                // 'discount' => $cart->discount,
                 'total' => $cart->total,
                 'order_id' => $order->id,
                 'product_id' => $cart->product_id,
-                'store_id' => $cart->store_id,
+                // 'store_id' => $cart->store_id,
                 'user_id' => $cart->user_id,
             ]);
         }
 
-        $store_account = StoreAccount::create([
-            'store_id' => $carts[0]->store_id,
-            'order_id' => $order->id,
-            'amount' =>  $order->total,
-            'date' => \Illuminate\Support\Carbon::now()
-        ]);
+        // $store_account = StoreAccount::create([
+        //     'store_id' => $carts[0]->store_id,
+        //     'order_id' => $order->id,
+        //     'amount' =>  $order->total,
+        //     'date' => \Illuminate\Support\Carbon::now()
+        // ]);
 
         Cart::where('user_id', auth('sanctum')->id())->forceDelete();
 
@@ -345,78 +352,89 @@ class OrderController extends Controller
             $order->store->user->notification($message, $title, $image, ['order_id' => $order_id]);
         }
 
-        return response()->json(['status' => true, 'data' => $order, 'redeem_price' => $redeem_price]);
+        return response()->json(['status' => true, 'data' => $order]);
     }
 
-    public function show($id)
+    public function show()
     {
         $notification = false;
 
-        $explode = explode(":", $id);
+         $validator = Validator::make(request()->input(), [
+            'order_id' => 'required',
+         ]);
 
-        $order = Order::query();
+        if ($validator->fails())
+            return response()->json(['status' => false, 'message' => $validator->errors()->first()]);
 
-        if (auth('sanctum')->user()->hasRole('Merchant') and request('merchant') == "1") {
-            $order = $order->where('store_id', auth('sanctum')->user()->stores()->pluck('id')->toArray());
-        }
+        $order = Order::find(request('order_id'))->first();
+    
+        
 
-        if (auth('sanctum')->user()->hasRole('Delivery') and request('delivery') == "1") {
-            $ordersIDS = OrderUser::where('user_id', auth('sanctum')->id())->pluck('order_id')->toArray();
-            $order = $order->whereNotIn('id', $ordersIDS)->whereNull('delivery_id');
-        }
+        // $explode = explode(":", $id);
 
-        if (auth('sanctum')->user()->hasRole('Customer') and request('customer') == "1") {
-            $order = $order->where('user_id', auth('sanctum')->id());
-        }
+        // $order = Order::query();
 
-        if (auth('sanctum')->user()->hasRole('Delivery') and auth('sanctum')->user()->store_join()->count() > 0) {
-            $arrayListDeliveries = auth('sanctum')->user()->store_join()->pluck('store_id');
+        // if (auth('sanctum')->user()->hasRole('Merchant') and request('merchant') == "1") {
+        //     $order = $order->where('store_id', auth('sanctum')->user()->stores()->pluck('id')->toArray());
+        // }
 
-            if ($store = auth('sanctum')->user()->stores()->first()) {
-                $arrayListDeliveries[] = $store->id;
-            }
+        // if (auth('sanctum')->user()->hasRole('Delivery') and request('delivery') == "1") {
+        //     $ordersIDS = OrderUser::where('user_id', auth('sanctum')->id())->pluck('order_id')->toArray();
+        //     $order = $order->whereNotIn('id', $ordersIDS)->whereNull('delivery_id');
+        // }
 
-            $order = $order->whereIn('store_id', $arrayListDeliveries);
-        }
+        // if (auth('sanctum')->user()->hasRole('Customer') and request('customer') == "1") {
+        //     $order = $order->where('user_id', auth('sanctum')->id());
+        // }
 
-        $order = $order->where(function ($q) use ($explode) {
-            return $q->where(function ($q) use ($explode) {
-                return $q->where('id', $explode[0])->orWhere('order_number', $explode[0]);
-            });
-        });
+        // if (auth('sanctum')->user()->hasRole('Delivery') and auth('sanctum')->user()->store_join()->count() > 0) {
+        //     $arrayListDeliveries = auth('sanctum')->user()->store_join()->pluck('store_id');
 
-        $order = $order->with('store', 'OrderDetails', 'OrderDetails.product', 'user', 'delivery', 'address', 'payment_gateway', 'delivery_method')->first();
+        //     if ($store = auth('sanctum')->user()->stores()->first()) {
+        //         $arrayListDeliveries[] = $store->id;
+        //     }
+
+        //     $order = $order->whereIn('store_id', $arrayListDeliveries);
+        // }
+
+        // $order = $order->where(function ($q) use ($explode) {
+        //     return $q->where(function ($q) use ($explode) {
+        //         return $q->where('id', $explode[0])->orWhere('order_number', $explode[0]);
+        //     });
+        // });
+
+        $order = $order->with('OrderDetails', 'OrderDetails.product', 'user', 'address')->first();
 
         if (!$order) {
             return response()->json(['status' => false, 'message' => "you don't have permissions for this order or order not exist", 'data' => $order]);
         }
 
-        if (!empty($explode[1])) {
+        // if (!empty($explode[1])) {
 
-            $target = User::find($explode[1]);
+        //     $target = User::find($explode[1]);
 
-            if ($target) {
+        //     if ($target) {
 
-                if ($target->hasRole('Merchant') and $order->status == 2) {
-                    $order->status = 3;
-                    $order->save();
-                } elseif ($target->hasRole('Customer') and $order->status == 3) {
-                    $order->status = 4;
-                    $order->save();
-                }
+        //         if ($target->hasRole('Merchant') and $order->status == 2) {
+        //             $order->status = 3;
+        //             $order->save();
+        //         } elseif ($target->hasRole('Customer') and $order->status == 3) {
+        //             $order->status = 4;
+        //             $order->save();
+        //         }
 
-                $notification = true;
-            }
-        } else {
-            if (request('status') == -1 and $order->status != 0) {
-                return response()->json(['status' => false, 'message' => "You cannot cancel the order now"]);
-            }
-            if (request('status')) {
-                $order->status = request('status');
-                $order->save();
-                $notification = true;
-            }
-        }
+        //         $notification = true;
+        //     }
+        // } else {
+        //     if (request('status') == -1 and $order->status != 0) {
+        //         return response()->json(['status' => false, 'message' => "You cannot cancel the order now"]);
+        //     }
+        //     if (request('status')) {
+        //         $order->status = request('status');
+        //         $order->save();
+        //         $notification = true;
+        //     }
+        // }
 
         if ($notification) {
             $title = __("Change Order Status") . ' ' . $order->string_status;
