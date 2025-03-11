@@ -25,36 +25,25 @@ class OrderController extends Controller
     public function index()
     {
 
-        if (request()->header('device_id')) {
-            Cart::where('device_id', request()->header('device_id'))->update(['device_id' => null, 'user_id' => auth('sanctum')->id()]);
-        }
+        $index = request()->header('index');
 
-        $orders = Order::with('store', 'user', 'delivery', 'address', 'payment_gateway');
-        if (auth('sanctum')->user()->hasRole('Delivery') and request('delivery') == 1 and request('status') != "1") {
-            $ordersIDS = OrderUser::where('user_id', auth('sanctum')->id())->pluck('order_id')->toArray();
-            $orders = $orders->whereNotIn('id', $ordersIDS)->whereNull('delivery_id');
-        } else {
-            return response()->json(['status' => false, 'message' => "Not Found Data"]);
-        }
-        if (request('status')) {
-            if (request('status') == "-1") {
-                $orders = $orders->whereIn('status', [0, 1]);
-            } elseif (request('status') == "-2") {
-                $orders = $orders->where('status', '>', 0);
-            } else {
-                $orders = $orders->where('status', request('status'));
-            }
-        }
+        if(!$index)
+           return response()->json(['status' => false, 'message' => "Index number is required"]);
+    
 
-        if (request('status') === "0") {
-            $orders = $orders->where('status', 0);
-        }
+        $index = is_numeric($index) ? (int) $index : 1;
 
-        if (request('store_id')) {
-            $orders = $orders->whereIn('store_id', request('store_id'));
-        }
-        $orders = $orders->with('OrderDetails', 'OrderDetails.product')->with('store')->orderBy('id', 'DESC')->paginate(10);
-        return response()->json(['status' => true, 'data' => $orders->items()]);
+        $index = max(1 , $index);
+        $limit = 10 ;
+        $offset = ($index - 1 ) * $limit;
+
+
+        $orders = Order::where('user_id' , auth('sanctum')->id())
+                    ->with('OrderDetails', 'OrderDetails.product')->orderBy('id', 'DESC')->
+                    skip($offset)->take($limit)->get();
+
+
+        return response()->json(['status' => true, 'data' => $orders]);
     }
 
     public function index_delivery()
@@ -367,8 +356,8 @@ class OrderController extends Controller
             return response()->json(['status' => false, 'message' => $validator->errors()->first()]);
 
         $order = Order::find(request('order_id'))->first();
-    
-        
+
+
 
         // $explode = explode(":", $id);
 

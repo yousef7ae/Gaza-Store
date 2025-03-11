@@ -57,7 +57,11 @@ class CategoriesCreate extends Component
 
         if ($this->imageTemp) {
             $this->validate(['imageTemp' => 'image|mimes:jpeg,png,jpg,gif|max:2048']);
-            $this->category['image'] = $this->imageTemp->store('categories');
+
+             $this->imageTemp->store('categories');
+            $this->category['image'] = 'categories/'. $this->imageTemp->hashName();
+
+            // $this->category['image'] = $this->imageTemp->store('categories');
         } else {
             unset($this->category['image']);
         }

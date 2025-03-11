@@ -122,6 +122,7 @@ class Categories extends Component
         }
 
         $categories = $categories->orderBy('created_at', "DESC")->paginate(30);
+        // dd($categories[1]);
 
         return view('livewire.admin.categories.categories', compact('categories'))->layout('livewire.admin.app');
     }
