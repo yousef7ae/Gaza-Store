@@ -11,6 +11,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Laravel\Socialite\Facades\Socialite;
+use App\Events\ResetCode;
 
 class UserController extends Controller
 {
@@ -157,6 +158,7 @@ class UserController extends Controller
 
     public function forget()
     {
+
         $validator = Validator::make(request()->input(), [
             'email' => 'required|email|exists:users,email',
         ]);
@@ -166,23 +168,25 @@ class UserController extends Controller
         }
 
         $user = User::where('email', request('email'))->first();
-        $user->reset_code = 1111;
+        $user->reset_code = rand(1000, 9999);
         //        rand(1000, 9999)
-        $user->save();
+         $user->save();
 
-        $to = $user->email;
+        event(new ResetCode($user));
 
-        $from = env("MAIL_FROM_ADDRESS");
+        // $to = $user->email;
 
-        $fromName = env('APP_NAME');
+        // $from = env("MAIL_FROM_ADDRESS");
 
-        $subject = "forget password " . env('APP_NAME');
+        // $fromName = env('APP_NAME');
 
-        $message = "your code is: " . $user->reset_code;
+        // $subject = "forget password " . env('APP_NAME');
 
-        $headers = 'From: ' . $fromName . '<' . $from . '>';
+        // $message = "your code is: " . $user->reset_code;
 
-        mail($to, $subject, $message, $headers);
+        // $headers = 'From: ' . $fromName . '<' . $from . '>';
+
+        // mail($to, $subject, $message, $headers);
 
         return response()->json([
             "status" => true,
@@ -195,7 +199,7 @@ class UserController extends Controller
     {
         $validator = Validator::make(request()->input(), [
             'email' => 'required|email|exists:users,email',
-            'code' => 'required|numeric',
+            'reset_code' => 'required|numeric',
         ]);
 
         if (!$validator->passes()) {
@@ -204,26 +208,26 @@ class UserController extends Controller
 
         $user = User::where('email', request('email'))->first();
 
-        if ($user->reset_code != request('code')) {
+        if ($user->reset_code != request('reset_code')) {
             return response()->json(["status" => false, "message" => "error code"]);
         }
 
         $user->password = Hash::make(request('password'));
         $user->save();
 
-        $to = $user->email;
+        // $to = $user->email;
 
-        $from = env("MAIL_FROM_ADDRESS");
+        // $from = env("MAIL_FROM_ADDRESS");
 
-        $fromName = env('APP_NAME');
+        // $fromName = env('APP_NAME');
 
-        $subject = "forget password " . env('APP_NAME');
+        // $subject = "forget password " . env('APP_NAME');
 
-        $message = "your code is: " . $user->reset_code;
+        // $message = "your code is: " . $user->reset_code;
 
-        $headers = 'From: ' . $fromName . '<' . $from . '>';
+        // $headers = 'From: ' . $fromName . '<' . $from . '>';
 
-        mail($to, $subject, $message, $headers);
+        // mail($to, $subject, $message, $headers);
 
         return response()->json([
             "status" => true,
@@ -237,7 +241,8 @@ class UserController extends Controller
         $input = request('email');
         $validator = Validator::make(request()->input(), [
             'email' => 'required|email|exists:users,email',
-            'password' => 'required|confirmed|min:6',
+            'old_password' => 'required|min:6',
+            'new_password' => 'required|min:6'
         ]);
 
         if ($validator->fails()) {
@@ -245,20 +250,18 @@ class UserController extends Controller
         }
 
         $user = User::where('email', request('email'))->first();
-        if ($user) {
-            $message = "Email could not be sent to this email address";
+
+        if(!Hash::check(request('old_password') , $user->password) )
+        {
+            return response(['error' => ' Old Password Incorrect']);
+
         }
-        $user->password = Hash::make(request('password'));
+
+        $user->password = Hash::make(request('new_password'));
         $message = "successfully";
         $user->save();
 
-        //        $response =  Password::sendResetLink(["email" => request('email')]);
-        //        if($response == Password::RESET_LINK_SENT){
-        //            $message = "Mail send successfully";
-        //        }else{
-        //            $message = "Email could not be sent to this email address";
-        //        }
-        $response = ['status' => true, 'message' => $message];
+        $response = ['status' => true, 'message' => $message , 'user' => $user];
         return response($response, 200);
     }
 
