@@ -10,7 +10,7 @@ class AddressController extends Controller
 {
     public function index()
     {
-        $address = Address::where('user_id', auth('sanctum')->id())->with('country', 'city')->get();
+        $address = Address::where('user_id', auth('sanctum')->id())->get();
         return response()->json(['status' => true, 'message' => 'success', 'data' => $address]);
     }
 
@@ -21,9 +21,9 @@ class AddressController extends Controller
             'mobile' => 'required',
             //            'email' => 'nullable|email',
             'location' => 'nullable',
-            'country_id' => 'nullable',
-            'city_id' => 'nullable',
-            'zip_code' => 'nullable',
+            // 'country_id' => 'nullable',
+            // 'city_id' => 'nullable',
+            // 'zip_code' => 'nullable',
             'note' => 'nullable',
             'lat' => 'required',
             'lng' => 'required',
@@ -37,10 +37,10 @@ class AddressController extends Controller
             'name' => request('name'),
             //            'email' => request('email') ? request('email') : auth('sanctum')->user()->email,
             'mobile' => request('mobile') ? request('mobile') : auth('sanctum')->user()->mobile,
-            'country_id' => request('country_id') ? request('country_id') : auth('sanctum')->user()->country_id,
-            'city_id' => request('city_id') ? request('city_id') : auth('sanctum')->user()->city_id,
+            // 'country_id' => request('country_id') ? request('country_id') : auth('sanctum')->user()->country_id,
+            // 'city_id' => request('city_id') ? request('city_id') : auth('sanctum')->user()->city_id,
             'location' => request('location'),
-            'zip_code' => request('zip_code'),
+            // 'zip_code' => request('zip_code'),
             'note' => request('note'),
             'user_id' => auth('sanctum')->id(),
             'lat' => request('lat'),
@@ -52,7 +52,7 @@ class AddressController extends Controller
 
     public function show($id)
     {
-        $address = Address::where('user_id', auth('sanctum')->id())->with('country', 'city')->where('id', $id)->first();
+        $address = Address::where('user_id', auth('sanctum')->id())->where('id', $id)->first();
         return response()->json(['status' => true, 'data' => $address]);
     }
 
@@ -72,9 +72,9 @@ class AddressController extends Controller
             'location' => 'nullable',
             //            'email' => 'nullable|email',
             'mobile' => 'nullable',
-            'country_id' => 'nullable',
-            'city_id' => 'nullable',
-            'zip_code' => 'nullable',
+            // 'country_id' => 'nullable',
+            // 'city_id' => 'nullable',
+            // 'zip_code' => 'nullable',
             'note' => 'nullable',
             'lat' => 'required',
             'lng' => 'required',
@@ -88,16 +88,16 @@ class AddressController extends Controller
             'name' => request('name'),
             //            'email' => request('email') ? request('email') : auth('sanctum')->user()->email,
             'mobile' => request('mobile') ? request('mobile') : auth('sanctum')->user()->mobile,
-            'country_id' => request('country_id') ? request('country_id') : auth('sanctum')->user()->country_id,
-            'city_id' => request('city_id') ? request('city_id') : auth('sanctum')->user()->city_id,
+            // 'country_id' => request('country_id') ? request('country_id') : auth('sanctum')->user()->country_id,
+            // 'city_id' => request('city_id') ? request('city_id') : auth('sanctum')->user()->city_id,
             'location' => request('location'),
-            'zip_code' => request('zip_code'),
+            // 'zip_code' => request('zip_code'),
             'note' => request('note'),
             'lat' => request('lat'),
             'lng' => request('lng'),
         ]);
 
-        $address = Address::where('user_id', auth('sanctum')->id())->where('id', $id)->with('country', 'city')->first();
+        $address = Address::where('user_id', auth('sanctum')->id())->where('id', $id)->first();
 
         return response()->json(['status' => true, 'message' => 'success', 'data' => $address]);
     }

@@ -20,7 +20,7 @@ class Coupon extends Model
         'user_id',
 //        'store_id',
 //        'category_id',
-//        'product_id',
+       'product_id',
         'expiration',
         'status',
     ];

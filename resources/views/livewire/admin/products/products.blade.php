@@ -94,8 +94,8 @@
                                                 <td>{{ $product->id}}</td>
                                                 <td>
                                                     <img width="50" class="rounded-circle img-thumbnail"
-                                                         src="{{ $product->image ? $product->image : url('dashboard/images/image1.png')}}"
-                                                         data-holder-rendered="true">
+                                                        src="{{ $product->images && isset($product->images[0]) ? $product->images[0]->image : url('dashboard/images/image1.png') }}"
+                                                        data-holder-rendered="true">
                                                 </td>
                                                 <td>{{ $product->name}}</td>
                                                 <td>{{ $product->user ? $product->user->name : __("Empty") }}</td>

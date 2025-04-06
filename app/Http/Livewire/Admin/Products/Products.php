@@ -89,6 +89,7 @@ class Products extends Component
     {
         $products = Product::query();
 
+
         if (!auth()->user()->hasRole('Admin')) {
             $products = $products->where('user_id', auth()->id());
         }
@@ -113,6 +114,8 @@ class Products extends Component
         }
 
         $products = $products->orderBy('created_at', "DESC")->paginate(10);
+
+        // dd($products);
 
         return view('livewire.admin.products.products', compact('products'))->layout('livewire.admin.app');
     }

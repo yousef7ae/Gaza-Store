@@ -44,8 +44,8 @@ class CategoryController extends Controller
         //            $categories = $categories->where('store_id', $store_id);
         //        }
 
-        $categories = $categories->get();
-
-        return response()->json(['status' => true, 'data' => $categories], Response::HTTP_OK);
+        return response()->json(['status' => true, 'data' => $categories]);
     }
+
+
 }

@@ -70,9 +70,9 @@ class OrderController extends Controller
             return response()->json(['status' => false, 'message' => "address is required"]);
         }
 
-        if (!request('payment_gateway_id')) {
-            return response()->json(['status' => false, 'message' => "payment gateway is required"]);
-        }
+        // if (!request('payment_gateway_id')) {
+        //     return response()->json(['status' => false, 'message' => "payment gateway is required"]);
+        // }
 
         $carts = Cart::where(function ($q) {
             if (auth('sanctum')->id()) {
@@ -106,34 +106,34 @@ class OrderController extends Controller
         }
 
 
-        $delivery_fee = DeliveryFee::whereIn('store_id', $carts->pluck('store_id')->toArray())->max('value');
-        $delivery_fee_price = $delivery_fee ? $delivery_fee : 0;
-        if (request('distance')) {
-            $delivery_fee = DeliveryFee::where('from', '<=', request('distance'))->where('to', '>', request('distance'))->whereIn('store_id', $carts->pluck('store_id')->toArray())->first();
-            if ($delivery_fee) {
-                $delivery_fee_price = $delivery_fee->value;
-            }
-        }
+        // $delivery_fee = DeliveryFee::whereIn('store_id', $carts->pluck('store_id')->toArray())->max('value');
+        // $delivery_fee_price = $delivery_fee ? $delivery_fee : 0;
+        // if (request('distance')) {
+        //     $delivery_fee = DeliveryFee::where('from', '<=', request('distance'))->where('to', '>', request('distance'))->whereIn('store_id', $carts->pluck('store_id')->toArray())->first();
+        //     if ($delivery_fee) {
+        //         $delivery_fee_price = $delivery_fee->value;
+        //     }
+        // }
 
-        $redeem_points = 0;
-        $redeem_price = 0;
-        $redeem_message = "";
+        // $redeem_points = 0;
+        // $redeem_price = 0;
+        // $redeem_message = "";
 
-        if (request('redeem')) {
-            if (auth('sanctum')->check()) {
-                if (auth('sanctum')->user()->points < 1000) {
-                    $redeem_message = "The number of points is less than 1000";
-                } elseif (auth('sanctum')->user()->points > 100) {
-                    $redeem_message = "The number of points is less than 100";
-                } else {
-                    $redeem_message = "success";
-                    $redeem_points = intval(auth('sanctum')->user()->points / 100) * 100;
-                    $redeem_price = intval(auth('sanctum')->user()->points / 100);
-                }
-            } else {
-                $redeem_message = "you are not login";
-            }
-        }
+        // if (request('redeem')) {
+        //     if (auth('sanctum')->check()) {
+        //         if (auth('sanctum')->user()->points < 1000) {
+        //             $redeem_message = "The number of points is less than 1000";
+        //         } elseif (auth('sanctum')->user()->points > 100) {
+        //             $redeem_message = "The number of points is less than 100";
+        //         } else {
+        //             $redeem_message = "success";
+        //             $redeem_points = intval(auth('sanctum')->user()->points / 100) * 100;
+        //             $redeem_price = intval(auth('sanctum')->user()->points / 100);
+        //         }
+        //     } else {
+        //         $redeem_message = "you are not login";
+        //     }
+        // }
 
         $order = Order::create([
             'order_number' => time() . rand(1000, 9000),
