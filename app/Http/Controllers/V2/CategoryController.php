@@ -5,6 +5,8 @@ namespace App\Http\Controllers\V2;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Store;
+use Illuminate\Support\Facades\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Validator;
 
 class CategoryController extends Controller
@@ -31,19 +33,19 @@ class CategoryController extends Controller
 
         $categories = Category::where('status', 1)->get();
 
-        if(!$categories->count()) {
-            return response()->json(['status' => false, 'message' => 'No categories found']);
+        if (!$categories->count()) {
+            return response()->json(['status' => false, 'message' => 'No categories found'], Response::HTTP_BAD_REQUEST);
         }
         // whereHas('categories_stores', function ($q) use ($stores) {
         //     return $q->whereIn('store_id', $stores->pluck('id')->toArray());
         // });
 
-//        if (request('store_id')) {
-//            $categories = $categories->where('store_id', $store_id);
-//        }
+        //        if (request('store_id')) {
+        //            $categories = $categories->where('store_id', $store_id);
+        //        }
 
         $categories = $categories->get();
 
-        return response()->json(['status' => true, 'data' => $categories]);
+        return response()->json(['status' => true, 'data' => $categories], Response::HTTP_OK);
     }
 }

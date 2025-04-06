@@ -125,6 +125,10 @@ Route::middleware(['api-token', 'api-localization'])->group(function () {
         Route::post('/stores/{store_id}/join', [\App\Http\Controllers\V2\StoreController::class, 'join']);
         Route::post('/stores/{store_id}/need_delivery', [\App\Http\Controllers\V2\StoreController::class, 'need_delivery']);
         Route::get('/categories', [\App\Http\Controllers\V2\CategoryController::class, 'index']);
+        Route::post('/categories/store', [\App\Http\Controllers\V2\CategoryController::class, 'store']);
+        Route::put('/categories/update/{id}', [\App\Http\Controllers\V2\CategoryController::class, 'update']);
+        Route::get('/categories/show/{id}', [\App\Http\Controllers\V2\CategoryController::class, 'show']);
+        Route::get('/categories/delete/{id}', [\App\Http\Controllers\V2\CategoryController::class, 'destroy']);
         Route::get('/brands', [\App\Http\Controllers\V2\BrandController::class, 'index']);
         Route::get('/products', [\App\Http\Controllers\V2\ProductController::class, 'index']);
         Route::get('/products/{product_id}', [\App\Http\Controllers\V2\ProductController::class, 'show']);
@@ -198,7 +202,7 @@ Route::middleware(['api-token', 'api-localization'])->group(function () {
 
             Route::get('/check_coupon', [\App\Http\Controllers\V2\CartsController::class, 'checkCoupon']);
 
-//        Route::get('/check_coupon', [\App\Http\Controllers\V2\CouponController::class, 'index']);
+            //        Route::get('/check_coupon', [\App\Http\Controllers\V2\CouponController::class, 'index']);
             Route::get('/check_coupon/{id}', [\App\Http\Controllers\V2\CouponController::class, 'show']);
             Route::post('/check_coupon', [\App\Http\Controllers\V2\CouponController::class, 'create']);
             Route::put('/coupons/{coupon_id}/update_status', [\App\Http\Controllers\V2\CouponController::class, 'change_status']);

@@ -22,5 +22,4 @@ class ProductImage extends Model
             return url('assets/images/image.png');
         }
     }
-
 }

@@ -20,8 +20,8 @@ class CreateCategoriesTable extends Migration
             $table->string('image')->nullable();
             $table->bigInteger('user_id')->nullable();
             $table->tinyInteger('status')->default(0)->nullable();
-//            $table->bigInteger('category_id')->nullable();
-//            $table->bigInteger('store_id')->nullable();
+            //            $table->bigInteger('category_id')->nullable();
+            //            $table->bigInteger('store_id')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

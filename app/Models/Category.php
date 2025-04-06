@@ -13,8 +13,8 @@ class Category extends Model
     protected $fillable = [
         'name',
         'description',
-//        'store_id',
-//        'category_id',
+        //        'store_id',
+        //        'category_id',
         'image',
         'user_id',
         'status',
@@ -73,5 +73,4 @@ class Category extends Model
             return url('dashboard/images/image1.png');
         }
     }
-
 }
