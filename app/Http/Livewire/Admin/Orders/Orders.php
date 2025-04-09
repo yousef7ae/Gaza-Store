@@ -54,21 +54,21 @@ class Orders extends Component
     }
     public function active()
     {
-        $status = '1';
+        $status = 1;
         $cities = Order::findOrFail($this->Status);
         $cities->status = $status;
         $cities->save();
-        $this->emit('success', __('City successfully Active'));
+        $this->emit('success', __('Order successfully Active'));
     }
 
     public function inactive()
     {
 
-        $status = '-1';
+        $status = 0;
         $cities = Order::findOrFail($this->Status);
         $cities->status = $status;
         $cities->save();
-        $this->emit('success', __('City successfully Inactive'));
+        $this->emit('success', __('Order successfully Inactive'));
 
     }
 

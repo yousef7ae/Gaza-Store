@@ -142,6 +142,7 @@ class CartsController extends Controller
         if (!$coupon) {
             return response()->json(['status' => false, 'message' => 'coupon not exists or expired']);
         } else {
+            // return $coupon->product_id;
             $cartsCoupon = $carts->where('product_id', $coupon->product_id);
 
 

@@ -133,7 +133,7 @@
                                                                title="{{__("accept")}}"><i class="fa fa-check"></i>
                                                             </a>
 
-                                                            <a class="btn btn-xs btn-danger {{$order->status == 1 ? 'disabled' : ''}}"
+                                                            <a class="btn btn-xs btn-danger {{$order->status == 0 ? 'disabled' : ''}}"
                                                                href="#"
                                                                wire:click.prevent="Status({{$order->id}})"
                                                                data-bs-toggle="modal" data-bs-target="#inactiveModal"
@@ -196,6 +196,60 @@
             </div>
         </div>
         <!-- Modal deleteModal -->
+
+
+        @if (auth()->user()->hasRole("Admin"))
+    <!-- Modal activeModal -->
+        <div wire:ignore.self class="modal fade" id="activeModal" tabindex="-1" role="dialog"
+             aria-labelledby="activeModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="activeModalLabel">{{__("Active Confirm")}}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true close-btn">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>{{__("Are you sure want to Active ?")}}</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary close-btn"
+                                data-bs-dismiss="modal">{{__("Close")}}</button>
+                        <button type="button" wire:click.prevent="active()" class="btn btn-primary close-modal"
+                                data-bs-dismiss="modal">{{__("Yes, Active")}}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Modal activeModal -->
+
+        <!-- Modal inactiveModal -->
+        <div wire:ignore.self class="modal fade" id="inactiveModal" tabindex="-1" role="dialog"
+             aria-labelledby="inactiveModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="inactiveModal">{{__("InActive Confirm")}}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true close-btn">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>{{__("Are you sure want to InActive?")}}</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary close-btn"
+                                data-bs-dismiss="modal">{{__("Close")}}</button>
+                        <button type="button" wire:click.prevent="inactive()" class="btn btn-danger close-modal"
+                                data-bs-dismiss="modal">{{__("Yes, InActive")}}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Modal inactiveModal -->
+    @endif
+</div>
 
 
 </div>
